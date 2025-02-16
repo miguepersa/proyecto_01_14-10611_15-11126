@@ -1,7 +1,19 @@
 import * as THREE from 'three';
-import vertexShader from './shaders/vertex.glsl';
-import fragmentShader from './shaders/fragment.glsl';
+import mat1VS from './shaders/m1VertexShader.glsl';
+import mat1FS from './shaders/m1FragmentShader.glsl';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
+
+const material1Shaders = {
+  vertexShader: mat1VS,
+  fragmentShader: mat1FS
+}
+
+const material1Uniforms = {
+  roughnessFactor: { value: 0.2 },
+  u_cameraPosition: { value: new THREE.Vector3() },
+  u_freq: {value: 10.0},
+  u_noiseFactor: {value: 0.0},
+}
 
 class App {
   private scene: THREE.Scene;
@@ -49,17 +61,14 @@ class App {
     // Create shader material
     this.geometry = new THREE.PlaneGeometry(2, 2);
     this.material = new THREE.RawShaderMaterial({
-      vertexShader,
-      fragmentShader,
+      ...material1Shaders,
       uniforms: {
         projectionMatrix: { value: this.camera.projectionMatrix },
         viewMatrix: { value: this.camera.matrixWorldInverse },
         modelMatrix: { value: new THREE.Matrix4() },
         u_time: { value: 0.0 },
         u_resolution: { value: resolution },
-        roughnessFactor: { value: 0.5 },
-        color: { value: new THREE.Color(0xff0000) },
-        u_cameraPosition: { value: new THREE.Vector3() }
+        ...material1Uniforms
       },
       glslVersion: THREE.GLSL3,
     });
