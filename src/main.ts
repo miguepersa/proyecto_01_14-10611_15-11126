@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import mat1VS from './shaders/m1VertexShader.glsl';
 import mat1FS from './shaders/m1FragmentShader.glsl';
+import mat3VS from './shaders/m3VertexShader.glsl';
+import mat3FS from './shaders/m3FragmentShader.glsl';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
 
 const material1Shaders = {
@@ -10,9 +12,16 @@ const material1Shaders = {
 
 const material1Uniforms = {
   roughnessFactor: { value: 0.2 },
-  u_cameraPosition: { value: new THREE.Vector3() },
   u_freq: {value: 10.0},
   u_noiseFactor: {value: 0.0},
+}
+
+const material3Shaders = {
+  vertexShader: mat3VS,
+  fragmentShader: mat3FS
+}
+
+const material3Uniforms = {
 }
 
 class App {
@@ -59,16 +68,17 @@ class App {
     const resolution = new THREE.Vector2(window.innerWidth, window.innerHeight);
 
     // Create shader material
-    this.geometry = new THREE.PlaneGeometry(2, 2);
+    this.geometry = new THREE.PlaneGeometry(2, 2, 1000, 1000);
     this.material = new THREE.RawShaderMaterial({
-      ...material1Shaders,
+      ...material3Shaders,
       uniforms: {
         projectionMatrix: { value: this.camera.projectionMatrix },
         viewMatrix: { value: this.camera.matrixWorldInverse },
         modelMatrix: { value: new THREE.Matrix4() },
         u_time: { value: 0.0 },
         u_resolution: { value: resolution },
-        ...material1Uniforms
+        u_cameraPosition: { value: new THREE.Vector3() },
+        //...material3Uniforms
       },
       glslVersion: THREE.GLSL3,
     });
@@ -102,7 +112,7 @@ class App {
 
   private animate(): void {
     requestAnimationFrame(this.animate);
-    const elapsedTime = (Date.now() - this.startTime) / 1000;
+    const elapsedTime = (Date.now() - this.startTime) / 10000;
     this.material.uniforms.u_time.value = elapsedTime;
 
     // Update camera position
