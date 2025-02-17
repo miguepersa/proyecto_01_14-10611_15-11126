@@ -121,7 +121,13 @@ class App {
     this.material.uniforms.u_normalMat.value = normalMatrix;
 
     // Update LightPosition
-    const lightPos = new THREE.Vector3(1.0,Math.tan(elapsedTime*3),1.0);
+
+    const amplitude = 5.0; // Adjust the range of movement
+    const frequency = 3.0; // Adjust the speed of movement
+
+    const lightPosX = Math.sin(elapsedTime * frequency * 5) * amplitude;
+
+    const lightPos = new THREE.Vector3(lightPosX,1.0,1.0);
     this.material.uniforms.u_lightPos.value.copy(lightPos);
 
     this.renderer.render(this.scene, this.camera);
