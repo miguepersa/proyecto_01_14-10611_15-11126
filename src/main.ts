@@ -22,6 +22,11 @@ const material3Shaders = {
 }
 
 const material3Uniforms = {
+  u_lightPosition: { value: new THREE.Vector3(0.0, 0.0, 3.0) },
+  u_lightColor: { value: new THREE.Color(1.0, 1.0, 1.0) }, 
+  u_lightIntensity: { value: 5.0 }, 
+  u_objectColor: { value: new THREE.Color(0.0, 0.2, 0.75) },
+  u_metallic: { value: 1.0 }, 
 }
 
 class App {
@@ -32,7 +37,6 @@ class App {
   private material: THREE.ShaderMaterial;
   private mesh: THREE.Mesh;
   private startTime: number;
-
   private controls: OrbitControls; // Declare controls
 
   private camConfig = {
@@ -45,7 +49,7 @@ class App {
   constructor() {
     // Create scene
     this.scene = new THREE.Scene();
-
+    
     // Setup camera
     this.camera = new THREE.PerspectiveCamera(
       this.camConfig.fov,
@@ -78,7 +82,7 @@ class App {
         u_time: { value: 0.0 },
         u_resolution: { value: resolution },
         u_cameraPosition: { value: new THREE.Vector3() },
-        //...material3Uniforms
+        ...material3Uniforms
       },
       glslVersion: THREE.GLSL3,
     });
