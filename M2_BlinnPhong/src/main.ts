@@ -1,35 +1,22 @@
 import * as THREE from 'three';
-import mat1VS from './shaders/m1VertexShader.glsl';
-import mat1FS from './shaders/m1FragmentShader.glsl';
-import mat3VS from './shaders/m3VertexShader.glsl';
-import mat3FS from './shaders/m3FragmentShader.glsl';
+import mat2VS from './shaders/m2VertexShader.glsl';
+import mat2FS from './shaders/m2FragmentShader.glsl';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
 
-const material1Shaders = {
-  vertexShader: mat1VS,
-  fragmentShader: mat1FS
+const material2Shaders = {
+  vertexShader: mat2VS,
+  fragmentShader: mat2FS
 }
 
-const material1Uniforms = {
-  u_roughness: { value: 0.0 },
-  u_freq: {value: 10.0},
-  u_amp: {value: 5.0},
-  u_beatSpeed: {value: 50.0},
-  u_beatLimit: {value: 40.0},
-}
+const material2Uniforms = {
 
-const material3Shaders = {
-  vertexShader: mat3VS,
-  fragmentShader: mat3FS
-}
-
-const material3Uniforms = {
-  u_lightPosition: { value: new THREE.Vector3(0.0, 0.0, 3.0) },
-  u_lightColor: { value: new THREE.Color(1.0, 1.0, 1.0) }, 
-  u_lightIntensity: { value: 5.0 }, 
-  u_objectColor: { value: new THREE.Color(0.0, 0.2, 0.75) },
-  u_metallic: { value: 0.8 },
-  u_roughness: { value: 0.5 },
+  u_lightColor: { value: new THREE.Color(0xffffff) },
+  u_lightPos: { value: new THREE.Vector3() },
+  u_materialColor: { value: new THREE.Color(0xffa7d6) },
+  u_specularColor: { value: new THREE.Color(0xffc9e6) },
+  u_normalMat: { value: new THREE.Matrix4()},
+  u_brightnessLevel: { value: 0.4},
+  u_shininess: { value: 80.0 }
 }
 
 class App {
@@ -77,7 +64,7 @@ class App {
     // Create shader material
     this.geometry = new THREE.PlaneGeometry(2, 2, 1000, 1000);
     this.material = new THREE.RawShaderMaterial({
-      ...material3Shaders,
+      ...material2Shaders,
       uniforms: {
         projectionMatrix: { value: this.camera.projectionMatrix },
         viewMatrix: { value: this.camera.matrixWorldInverse },
@@ -85,7 +72,7 @@ class App {
         u_time: { value: 0.0 },
         u_resolution: { value: resolution },
         u_cameraPosition: { value: new THREE.Vector3() },
-        ...material3Uniforms
+        ...material2Uniforms
       },
       glslVersion: THREE.GLSL3,
     });
@@ -127,8 +114,18 @@ class App {
 
     // Update OrbitControls
     this.controls.update(); 
+    
+    // Set values for the Normal Matrix
+    const normalMatrix = new THREE.Matrix3();
+    normalMatrix.getNormalMatrix(this.mesh.matrixWorld);
+    this.material.uniforms.u_normalMat.value = normalMatrix;
+
+    // Update LightPosition
+    const lightPos = new THREE.Vector3(1.0,Math.tan(elapsedTime*3),1.0);
+    this.material.uniforms.u_lightPos.value.copy(lightPos);
 
     this.renderer.render(this.scene, this.camera);
+
   }
 
   private onWindowResize(): void {
