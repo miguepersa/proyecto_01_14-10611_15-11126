@@ -11,9 +11,11 @@ const material1Shaders = {
 }
 
 const material1Uniforms = {
-  roughnessFactor: { value: 0.2 },
+  u_roughness: { value: 0.01 },
   u_freq: {value: 10.0},
-  u_noiseFactor: {value: 0.0},
+  u_amp: {value: 5.0},
+  u_beatSpeed: {value: 100.0},
+  u_beatLimit: {value: 50.0},
 }
 
 const material3Shaders = {
@@ -26,7 +28,7 @@ const material3Uniforms = {
   u_lightColor: { value: new THREE.Color(1.0, 1.0, 1.0) }, 
   u_lightIntensity: { value: 5.0 }, 
   u_objectColor: { value: new THREE.Color(0.0, 0.2, 0.75) },
-  u_metallic: { value: 1.0 }, 
+  u_metallic: { value: 0.5 }, 
 }
 
 class App {
@@ -72,9 +74,9 @@ class App {
     const resolution = new THREE.Vector2(window.innerWidth, window.innerHeight);
 
     // Create shader material
-    this.geometry = new THREE.PlaneGeometry(2, 2, 1000, 1000);
+    this.geometry = new THREE.PlaneGeometry(2, 2, 100, 100);
     this.material = new THREE.RawShaderMaterial({
-      ...material3Shaders,
+      ...material1Shaders,
       uniforms: {
         projectionMatrix: { value: this.camera.projectionMatrix },
         viewMatrix: { value: this.camera.matrixWorldInverse },
@@ -82,7 +84,7 @@ class App {
         u_time: { value: 0.0 },
         u_resolution: { value: resolution },
         u_cameraPosition: { value: new THREE.Vector3() },
-        ...material3Uniforms
+        ...material1Uniforms
       },
       glslVersion: THREE.GLSL3,
     });
