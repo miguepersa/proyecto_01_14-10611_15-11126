@@ -32,7 +32,7 @@ void main() {
 
     // Specular reflection (Blinn-Phong model)
     vec3 halfDir = normalize(lightDir + viewDir);
-    float spec = pow(max(dot(norm, halfDir), 0.0), mix(4.0, 64.0, 1.0 - u_roughness));
+    float spec = pow(max(dot(norm, halfDir), 0.0), mix(4.0, 64.0, 1.0));
 
     // Mix diffuse and specular based on metallic level
     vec3 diffuseColor = u_objectColor * diff * (1.0 - u_metallic);

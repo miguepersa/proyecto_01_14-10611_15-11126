@@ -6,6 +6,7 @@ uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
 uniform float u_time;
+uniform float u_roughness;
 
 in vec3 position;
 in vec3 normal;
@@ -69,6 +70,6 @@ void main() {
     vUv = uv;
     vPattern = pattern;
 
-    vec3 newPos = normal * pattern * 0.5;
+    vec3 newPos = normal * pattern * 0.5 * u_roughness;
     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position.x, position.y, newPos.z, 1.0);
 }
